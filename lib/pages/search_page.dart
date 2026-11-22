@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/theme/ting_theme.dart';
 import '../models/ting.dart';
 import '../services/bili_source.dart';
+import '../services/app_log.dart';
 import '../services/library.dart';
 import '../services/local_search.dart';
 import '../widgets/common.dart';
@@ -50,6 +51,7 @@ class _SearchPageState extends State<SearchPage> {
       _local = searchShelf(Library.instance.shelf, kw);
     });
 
+    AppLog.instance.event('search', '搜索「$kw」', data: {'local': _local.length});
     try {
       final list = await BiliSource.instance.search(kw);
       if (!mounted || _keyword != kw) return;

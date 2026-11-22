@@ -11,7 +11,9 @@ import 'pages/home_page.dart';
 import 'pages/setup_page.dart';
 import 'player/ting_audio_handler.dart';
 import 'player/ting_player.dart';
+import 'services/app_log.dart';
 import 'services/backup_service.dart';
+import 'services/log_reporter.dart';
 import 'services/cache/cache_engine.dart';
 import 'services/library.dart';
 import 'services/nas/nas_source.dart';
@@ -20,6 +22,16 @@ import 'services/update_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 日志要在一切之前起来：后面任何一处出错都要能记下来。
+  // init 自己会吞掉所有异常，不会因为日志挂掉拖住启动。
+  await AppLog.instance.init();
+  _installErrorHandlers();
+  AppLog.instance.event('app.start', 'App 启动', data: {
+    'version': AppLog.instance.versionName,
+    'code': AppLog.instance.versionCode,
+    'model': AppLog.instance.model,
+  });
   // 老人用手机几乎都是竖着拿，锁竖屏，避免画面转来转去
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   MediaKit.ensureInitialized();
@@ -29,6 +41,39 @@ Future<void> main() async {
   // 点通知也回不到 App（这是"通知栏没内容"的两个直接原因）。
   final handler = await _initAudioService();
   runApp(AudioServiceWidget(child: TingApp(audioHandler: handler)));
+
+  // 启动后 4 秒把上次没发出去的日志推上去。
+  // 放延迟是为了不和启动抢网络/CPU——老人开机就想听书，不能被上报拖慢。
+  unawaited(Future<void>.delayed(const Duration(seconds: 4), () async {
+    final ok = await LogReporter.instance.reportNow();
+    AppLog.instance.event('log.report', ok ? '启动上报完成' : '启动上报未成功');
+  }));
+}
+
+/// 把崩溃记进日志。老人手机上出问题，光看"闪退了"没法定位，
+/// 至少要留下异常栈的前几行。
+void _installErrorHandlers() {
+  final prev = FlutterError.onError;
+  FlutterError.onError = (details) {
+    AppLog.instance.error(
+      'crash.flutter',
+      details.exceptionAsString(),
+      data: {
+        'stack': details.stack?.toString().split('\n').take(6).join(' | '),
+        if (details.library != null) 'where': details.library,
+      },
+    );
+    prev?.call(details);
+  };
+
+  WidgetsBinding.instance.platformDispatcher.onError = (e, st) {
+    AppLog.instance.error(
+      'crash.platform',
+      '$e',
+      data: {'stack': st.toString().split('\n').take(6).join(' | ')},
+    );
+    return true;
+  };
 }
 
 /// 建立系统媒体会话。失败不阻断使用——前台照样能出声，只是锁屏没控件。

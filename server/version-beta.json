@@ -1,8 +1,8 @@
 {
-  "versionCode": 29,
-  "versionName": "1.1.25",
+  "versionCode": 30,
+  "versionName": "1.1.26",
   "url": "https://ali.popcalico.top/tingshu/tingshu-beta.apk",
-  "size": 38396037,
-  "notes": "修复「不喜欢这本」在书架只有一本时点不动（改为自动从网上找一本）",
+  "size": 38395321,
+  "notes": "提示条改为白底圆角卡片、2 秒自动消失（不再黑底长驻）",
   "force": false
 }

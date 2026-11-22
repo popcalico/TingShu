@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/theme/ting_theme.dart';
 import '../models/ting.dart';
 import '../services/bili_source.dart';
+import '../services/app_log.dart';
 import '../services/book_group.dart';
 import '../services/library.dart';
 import '../services/nas/nas_source.dart';
@@ -193,6 +194,10 @@ class _AddPageState extends State<AddPage> {
     try {
       final full = await _detailOf(b);
       await Library.instance.put(full);
+      AppLog.instance.event('book.add', '加入书架《${full.title}》', data: {
+        'src': full.source.id,
+        'ch': full.chapters.length,
+      });
       if (!mounted) return;
       setState(() => _addingId = null);
       Navigator.of(context).pushReplacement(

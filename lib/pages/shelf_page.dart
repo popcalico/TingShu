@@ -4,6 +4,7 @@ import '../core/theme/ting_theme.dart';
 import '../models/ting.dart';
 import '../player/ting_player.dart';
 import '../services/cache/cache_engine.dart';
+import '../services/app_log.dart';
 import '../services/library.dart';
 import '../widgets/common.dart';
 import '../widgets/recommend_flow.dart';
@@ -92,6 +93,7 @@ class _ShelfPageState extends State<ShelfPage> {
       if (playingId == it.book.id && playingSource == it.book.source) {
         await player.stop();
       }
+      AppLog.instance.event('book.remove', '从书架删掉《${it.book.title}》');
     }
 
     if (!mounted) return;

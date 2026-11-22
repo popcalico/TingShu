@@ -8,6 +8,7 @@ import '../core/theme/ting_theme.dart';
 import '../models/ting.dart';
 import '../services/audio_focus.dart';
 import '../services/bili_source.dart';
+import '../services/app_log.dart';
 import '../services/cache/cache_engine.dart';
 import '../services/library.dart';
 import '../services/nas/nas_source.dart';
@@ -230,6 +231,7 @@ class TingPlayer extends ChangeNotifier {
   Future<void> pause() async {
     await _mp.pause();
     _state = TingState.paused;
+    AppLog.instance.event('play.pause', '暂停');
     await _saveProgress();
     notifyListeners();
     _pushState(force: true);
@@ -237,12 +239,14 @@ class TingPlayer extends ChangeNotifier {
 
   Future<void> next() async {
     if (!hasNext) return;
+    AppLog.instance.event('play.next', '点了下一回');
     _index++;
     await _playCurrent();
   }
 
   Future<void> previous() async {
     if (!hasPrev) return;
+    AppLog.instance.event('play.prev', '点了上一回');
     _index--;
     await _playCurrent();
   }
@@ -251,6 +255,7 @@ class TingPlayer extends ChangeNotifier {
   Future<void> jumpTo(int index) async {
     final b = book;
     if (b == null || index < 0 || index >= b.chapters.length) return;
+    AppLog.instance.event('play.jump', '选了第 ${index + 1} 回');
     _index = index;
     await _playCurrent();
   }
@@ -375,15 +380,25 @@ class TingPlayer extends ChangeNotifier {
       await _lib.saveProgress(b.source, b.id, chapterIndex: _index);
       _startSaveTicker();
       _prefetchNext();
+
+      AppLog.instance.event('play.start', '播放《${b.title}》${ch.numbered}', data: {
+        'src': b.source.id,
+        'ch': _index + 1,
+        'total': b.chapters.length,
+      });
     } on QuarkException catch (e) {
       if (token != _openToken) return;
       _state = TingState.error;
       _error = e.message;
+      AppLog.instance.error('play.fail', '播放失败：${b.title} ${ch.numbered}',
+          e: e, data: {'src': b.source.id, 'ch': _index + 1});
       notifyListeners();
     } catch (e) {
       if (token != _openToken) return;
       _state = TingState.error;
       _error = _friendly(e);
+      AppLog.instance.error('play.fail', '播放失败：${b.title} ${ch.numbered}',
+          e: e, data: {'src': b.source.id, 'ch': _index + 1});
       notifyListeners();
     }
   }

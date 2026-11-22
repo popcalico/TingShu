@@ -18,6 +18,7 @@ import '../services/quark/quark_api.dart';
 import '../services/update_service.dart';
 import '../widgets/common.dart';
 import 'add_page.dart';
+import 'log_page.dart';
 import 'nas_settings_page.dart';
 import 'quark_login_page.dart';
 import 'setup_page.dart';
@@ -385,6 +386,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       if (beta) ...[
                         const SizedBox(height: 22),
                         _section('调试（只在测试版显示）'),
+                        BigRow(
+                          title: '设备日志',
+                          icon: Icons.receipt_long_rounded,
+                          value: '看老人做了什么',
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const LogPage()),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
                         BigRow(
                           title: '重新做一遍初始设置',
                           icon: Icons.restart_alt_rounded,

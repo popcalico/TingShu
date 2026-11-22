@@ -227,7 +227,17 @@ class MainActivity : AudioServiceActivity() {
                             } else {
                                 info.versionCode
                             }
-                            result.success(mapOf("versionCode" to code, "versionName" to info.versionName))
+                            result.success(
+                                mapOf(
+                                    "versionCode" to code,
+                                    "versionName" to info.versionName,
+                                    // 机型信息：日志上报要按设备区分，
+                                    // 多个老人各一台，靠这个认人
+                                    "model" to Build.MODEL,
+                                    "manufacturer" to Build.MANUFACTURER,
+                                    "sdk" to Build.VERSION.SDK_INT,
+                                )
+                            )
                         } catch (e: Exception) {
                             result.error("info_failed", "${e.message}", null)
                         }
