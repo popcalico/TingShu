@@ -1,0 +1,16 @@
+# 统一换行：源码入库存 LF，Windows 的批处理保留 CRLF
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# 二进制文件不做换行转换
+*.png binary
+*.jpg binary
+*.webp binary
+*.jar binary
+*.jks binary
+*.keystore binary
+*.apk binary
+*.otf binary
+*.ttf binary

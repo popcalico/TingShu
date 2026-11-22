@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 启动画面：与 App 同色的浅底，进程一起来就是"页面"而不是白屏或黑屏 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <color android:color="#F7F6F3" />
+    </item>
+</layer-list>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  自动更新用的 FileProvider 路径。
+  新版本 APK 下载到 getExternalStorageDirectory()/update/ 下，
+  对应 external-files-path 的 "update/"。
+-->
+<paths>
+    <external-files-path name="update" path="update/" />
+    <cache-path name="cache" path="." />
+</paths>

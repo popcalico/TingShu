@@ -1,0 +1,14 @@
+# 签名配置模板
+#
+# 用法：复制成 android/key.properties 并填入真实值。
+# key.properties 和 keystore 都不入库（见 .gitignore）。
+#
+# keystore 生成（一次性，生成后务必备份，丢了就无法覆盖升级）：
+#   keytool -genkeypair -v -keystore tingshu-release.jks \
+#     -keyalg RSA -keysize 2048 -validity 10000 -alias tingshu \
+#     -dname "CN=TingShu, OU=Personal, O=TingShu, L=Beijing, ST=Beijing, C=CN"
+
+storeFile=tingshu-release.jks
+storePassword=你的storePassword
+keyAlias=tingshu
+keyPassword=你的keyPassword

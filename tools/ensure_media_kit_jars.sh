@@ -1,0 +1,24 @@
+#!/bin/sh
+# 把 libmpv 的 4 个 jar 补回 build 目录。
+#
+# 为什么需要这个：media_kit_libs_android_audio 的 build.gradle 会在构建时
+# 从 GitHub 下载这几个 jar，国内网络经常超时，构建直接失败。
+# 这里在 tools/media_kit_jars/ 存了一份，构建前补回去。
+# flutter clean 会删掉 build/，所以这个脚本是每次构建的保险。
+set -e
+cd "$(dirname "$0")/.."
+
+SRC="tools/media_kit_jars"
+DST="build/media_kit_libs_android_audio/v1.1.8"
+
+[ -d "$SRC" ] || exit 0
+mkdir -p "$DST"
+
+for f in "$SRC"/*.jar; do
+  [ -f "$f" ] || continue
+  b=$(basename "$f")
+  if [ ! -f "$DST/$b" ]; then
+    cp "$f" "$DST/$b"
+    echo "[jars] 补回 $b"
+  fi
+done

@@ -1,0 +1,8 @@
+{
+  "versionCode": 24,
+  "versionName": "1.1.20",
+  "url": "https://ali.popcalico.top/tingshu/tingshu.apk",
+  "size": 38040173,
+  "notes": "修复夸克无法播放（取直链接口返回数组解析失败）；新增播放诊断；书架自动备份与恢复；更新不再丢配置",
+  "force": false
+}

@@ -1,0 +1,8 @@
+{
+  "versionCode": 28,
+  "versionName": "1.1.24",
+  "url": "https://ali.popcalico.top/tingshu/tingshu-beta.apk",
+  "size": 38386845,
+  "notes": "书架可多选删除；新增搜索（先本地再网络）；播放页去掉定时/倍速、放大上下回、新增「不喜欢这本换一本」",
+  "force": false
+}
