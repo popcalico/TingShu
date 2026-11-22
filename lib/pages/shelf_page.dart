@@ -99,9 +99,7 @@ class _ShelfPageState extends State<ShelfPage> {
       _selected.clear();
       _editing = false;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('已删掉 ${targets.length} 本')),
-    );
+    showTip(context, '已删掉 ${targets.length} 本');
   }
 
   @override

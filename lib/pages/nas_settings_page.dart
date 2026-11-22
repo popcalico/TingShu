@@ -192,9 +192,7 @@ class _NasSettingsPageState extends State<NasSettingsPage> {
                             await _applyInputs();
                             NasSource.instance.invalidate();
                             if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('已保存')),
-                            );
+                            showTip(context, '已保存');
                             Navigator.of(context).pop();
                           },
                           style: OutlinedButton.styleFrom(minimumSize: const Size(0, 60)),

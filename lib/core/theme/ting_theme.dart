@@ -119,10 +119,27 @@ ThemeData buildTingTheme() {
         (s) => s.contains(WidgetState.selected) ? TingColors.primary : TingColors.line,
       ),
     ),
-    snackBarTheme: const SnackBarThemeData(
-      backgroundColor: TingColors.ink,
-      contentTextStyle: TextStyle(fontSize: T.fontBody, color: Colors.white),
+    // 提示条不要做成"黑条"。
+    //
+    // 原来是 ink 近黑底 + 21 号字，浮在浅色页面底部非常突兀，
+    // 而且默认 4 秒、连点两次会排队成 8 秒——像"卡住了"。
+    // 改成白底卡片 + 描边 + 圆角，和页面里的卡片是同一套语言，
+    // 时长在 showTip() 里统一收短（主题里设不了时长）。
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: TingColors.surface,
+      contentTextStyle: const TextStyle(
+        fontSize: 19,
+        height: 1.4,
+        color: TingColors.ink,
+      ),
+      actionTextColor: TingColors.primary,
       behavior: SnackBarBehavior.floating,
+      elevation: 6,
+      insetPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: TingColors.line, width: 1),
+      ),
     ),
     dividerTheme: const DividerThemeData(color: TingColors.line, thickness: 1),
   );

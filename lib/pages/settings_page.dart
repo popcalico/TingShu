@@ -682,11 +682,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  void _toast(String text) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(text)));
-  }
+  void _toast(String text) => showTip(context, text);
 
   // ---------- 书架备份 ----------
 

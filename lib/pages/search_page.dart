@@ -94,9 +94,7 @@ class _SearchPageState extends State<SearchPage> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _addingId = null);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('没打开：${'$e'.replaceFirst('Exception: ', '')}')),
-      );
+      showTip(context, '没打开：${'$e'.replaceFirst('Exception: ', '')}');
     }
   }
 

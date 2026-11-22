@@ -240,9 +240,7 @@ class _AddPageState extends State<AddPage> {
   }
 
   void _toast(String text) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(text)));
+    showTip(context, text);
   }
 
   @override

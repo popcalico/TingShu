@@ -446,9 +446,7 @@ Future<void> _skipBook(BuildContext context, TingPlayer p) async {
     final idx = chapters.isEmpty ? 0 : next.chapterIndex.clamp(0, chapters.length - 1);
     await p.open(next.book, idx, positionMs: next.positionMs);
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('换成了《${next.book.title}》')),
-    );
+    showTip(context, '换成了《${next.book.title}》');
     return;
   }
 
@@ -459,14 +457,15 @@ Future<void> _skipBook(BuildContext context, TingPlayer p) async {
   final changed = await _skipToOnline(context, p);
   if (!context.mounted || changed) return;
 
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: const Text('换不了：书架里只有这一本，网上也没找到别的'),
-      action: SnackBarAction(
-        label: '去添加',
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const ShelfPage()),
-        ),
+  showTip(
+    context,
+    '换不了：书架里只有这一本，网上也没找到别的',
+    // 带"去添加"按钮，给老人留足看清的时间
+    duration: const Duration(seconds: 4),
+    action: SnackBarAction(
+      label: '去添加',
+      onPressed: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const ShelfPage()),
       ),
     ),
   );
@@ -510,9 +509,7 @@ Future<bool> _skipToOnline(BuildContext context, TingPlayer p) async {
 
     await p.open(pick.book, pick.startIndex);
     if (!context.mounted) return false;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('换成了《${pick.book.title}》${pick.fromLibrary ? '' : '（网上找的）'}')),
-    );
+    showTip(context, '换成了《${pick.book.title}》${pick.fromLibrary ? '' : '（网上找的）'}');
     return true;
   } catch (_) {
     closeDialog();

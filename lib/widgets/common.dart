@@ -233,3 +233,30 @@ String fmtBytes(int bytes) {
   if (bytes >= mb) return '${(bytes / mb).toStringAsFixed(0)} M';
   return '${(bytes / 1024).toStringAsFixed(0)} K';
 }
+
+/// 统一的操作提示条。
+///
+/// 两个坑，一起解决：
+/// 1. **时长**：SnackBar 默认 4 秒，连点两次会排队成 8 秒，感觉像卡住。
+///    这里收到 2 秒出头——需要慢慢看的用对话框，不靠提示条。
+/// 2. **排队**：连续提示时先把上一条顶掉（hideCurrentSnackBar），
+///    否则老人点了第二下，看到的还是上一句话。
+///
+/// 外观（白底/圆角/描边）在 ThemeData.snackBarTheme 里统一配，这里不管样式。
+void showTip(
+  BuildContext context,
+  String text, {
+  SnackBarAction? action,
+  Duration duration = const Duration(milliseconds: 2200),
+}) {
+  final messenger = ScaffoldMessenger.of(context);
+  messenger
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        content: Text(text),
+        duration: duration,
+        action: action,
+      ),
+    );
+}

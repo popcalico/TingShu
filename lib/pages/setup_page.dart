@@ -7,6 +7,7 @@ import '../services/device_perms.dart';
 import '../services/backup_service.dart';
 import '../services/library.dart';
 import '../services/quark/quark_api.dart';
+import '../widgets/common.dart';
 import 'home_page.dart';
 import 'quark_login_page.dart';
 
@@ -104,9 +105,7 @@ class _SetupPageState extends State<SetupPage> with WidgetsBindingObserver {
     final done = await BackupService.instance.restoreNow();
     if (!mounted) return;
     if (!done) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('恢复失败，备份可能损坏')),
-      );
+      showTip(context, '恢复失败，备份可能损坏');
       return;
     }
     // 恢复完配置可能已经是"已完成"，直接进首页
@@ -116,9 +115,7 @@ class _SetupPageState extends State<SetupPage> with WidgetsBindingObserver {
       );
     } else {
       setState(() {});
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('书架已恢复，接着把 3 项设置配一下')),
-      );
+      showTip(context, '书架已恢复，接着把 3 项设置配一下');
     }
   }
 

@@ -93,9 +93,7 @@ class _HomePageState extends State<HomePage> {
     if (go != true || !mounted) return;
     final ok = await BackupService.instance.restoreNow();
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(ok ? '已恢复 ${b.books} 部书' : '恢复失败，备份可能损坏')),
-    );
+    showTip(context, ok ? '已恢复 ${b.books} 部书' : '恢复失败，备份可能损坏');
     if (ok) setState(() {});
   }
 
