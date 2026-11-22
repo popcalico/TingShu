@@ -75,7 +75,7 @@ function New-Icon {
     $bmp.Dispose()
 }
 
-$res = "E:\pingshu\android\app\src\main\res"
+$res = "E:\pingshu\src\android\app\src\main\res"
 
 $legacy = @{ "mipmap-mdpi" = 48; "mipmap-hdpi" = 72; "mipmap-xhdpi" = 96; "mipmap-xxhdpi" = 144; "mipmap-xxxhdpi" = 192 }
 foreach ($k in $legacy.Keys) {
@@ -87,7 +87,7 @@ foreach ($k in $fg.Keys) {
     New-Icon -Size $fg[$k] -Path "$res\$k\ic_launcher_foreground.png" -Content 0.46 -Rounded $false
 }
 
-New-Icon -Size 512 -Path "E:\pingshu\assets\logo.png" -Content 0.72 -Rounded $true
+New-Icon -Size 512 -Path "E:\pingshu\src\assets\logo.png" -Content 0.72 -Rounded $true
 
 Write-Output "icons generated"
 Get-ChildItem "$res\mipmap-xxxhdpi\ic_launcher*.png" | Select-Object Name, Length
