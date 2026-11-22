@@ -6,8 +6,10 @@ import '../core/theme/ting_theme.dart';
 import '../player/ting_player.dart';
 import '../services/cache/cache_engine.dart';
 import '../services/library.dart';
+import '../services/recommend.dart';
 import '../widgets/common.dart';
 import '../widgets/recommend_flow.dart';
+import 'shelf_page.dart';
 
 /// 播放页：只有"上一回 / 播放 / 下一回"和一根进度条。
 ///
@@ -439,21 +441,109 @@ Future<void> _skipBook(BuildContext context, TingPlayer p) async {
     }
   }
 
-  if (next == null) {
+  if (next != null) {
+    final chapters = next.book.chapters;
+    final idx = chapters.isEmpty ? 0 : next.chapterIndex.clamp(0, chapters.length - 1);
+    await p.open(next.book, idx, positionMs: next.positionMs);
+    if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('书架里只有这一本，先添加别的书吧')),
+      SnackBar(content: Text('换成了《${next.book.title}》')),
     );
     return;
   }
 
-  final chapters = next.book.chapters;
-  final idx = chapters.isEmpty ? 0 : next.chapterIndex.clamp(0, chapters.length - 1);
-  await p.open(next.book, idx, positionMs: next.positionMs);
+  // 书架里确实没有别的书了 —— 去网上找一本。
+  //
+  // 原来的做法是弹一句"书架里只有这一本"就结束，等于按钮点了没反应：
+  // 老人点"不喜欢"是想**马上听点别的**，不是想听一句解释。
+  final changed = await _skipToOnline(context, p);
+  if (!context.mounted || changed) return;
 
-  if (!context.mounted) return;
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('换成了《${next.book.title}》')),
+    SnackBar(
+      content: const Text('换不了：书架里只有这一本，网上也没找到别的'),
+      action: SnackBarAction(
+        label: '去添加',
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const ShelfPage()),
+        ),
+      ),
+    ),
   );
+}
+
+/// 书架里没有第二本时，从网络推荐里捞一本。
+///
+/// 复用"推荐一本"的逻辑：它会排除当前正在播的这本、排除听过的书，
+/// 先试书架、再试网络。
+Future<bool> _skipToOnline(BuildContext context, TingPlayer p) async {
+  var dialogOpen = true;
+  // 网络搜索要几秒，挂个遮罩；不 await，否则后面的代码等不到
+  unawaited(showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => const _SkipLoadingDialog(),
+  ).then((_) => dialogOpen = false));
+
+  void closeDialog() {
+    if (dialogOpen && context.mounted) {
+      dialogOpen = false;
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+  }
+
+  try {
+    final pick = await RecommendService.instance
+        .pick()
+        .timeout(const Duration(seconds: 25));
+    closeDialog();
+    if (!context.mounted) return false;
+    if (pick == null) return false;
+
+    final cur = p.book;
+    // 兜底：万一推回来的还是当前这本，别在原地打转
+    if (cur != null &&
+        pick.book.id == cur.id &&
+        pick.book.source == cur.source) {
+      return false;
+    }
+
+    await p.open(pick.book, pick.startIndex);
+    if (!context.mounted) return false;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('换成了《${pick.book.title}》${pick.fromLibrary ? '' : '（网上找的）'}')),
+    );
+    return true;
+  } catch (_) {
+    closeDialog();
+    return false;
+  }
+}
+
+class _SkipLoadingDialog extends StatelessWidget {
+  const _SkipLoadingDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return const AlertDialog(
+      content: Row(
+        children: [
+          SizedBox(
+            width: 28,
+            height: 28,
+            child: CircularProgressIndicator(strokeWidth: 3),
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              '书架里没有别的书，正在网上找一本…',
+              style: TextStyle(fontSize: 17, height: 1.5),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// 只在底部留一行缓存说明。
