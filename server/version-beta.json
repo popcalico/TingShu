@@ -1,8 +1,8 @@
 {
-  "versionCode": 30,
-  "versionName": "1.1.26",
+  "versionCode": 31,
+  "versionName": "1.1.27",
   "url": "https://ali.popcalico.top/tingshu/tingshu-beta.apk",
-  "size": 38395321,
-  "notes": "提示条改为白底圆角卡片、2 秒自动消失（不再黑底长驻）",
+  "size": 38484281,
+  "notes": "新增设备日志：启动回传服务器、设置里可视化查看老人操作与错误、支持多设备区分",
   "force": false
 }

@@ -10,6 +10,7 @@ import '../services/app_wipe.dart';
 import '../services/backup_service.dart';
 import '../services/cache/cache_engine.dart';
 import '../services/device_perms.dart';
+import '../services/history.dart';
 import '../services/library.dart';
 import '../services/nas/nas_source.dart';
 import '../services/notify_permission.dart';
@@ -869,6 +870,7 @@ class _SettingsPageState extends State<SettingsPage> {
       await (await SharedPreferences.getInstance()).clear();
     } catch (_) {}
     Library.instance.resetForWipe();
+    PlayHistory.instance.resetForWipe();
     NasSource.instance.resetForWipe();
     CacheEngine.instance.resetForWipe();
     QuarkApi.instance.resetForWipe();

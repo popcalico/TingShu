@@ -15,6 +15,7 @@ import 'services/app_log.dart';
 import 'services/backup_service.dart';
 import 'services/log_reporter.dart';
 import 'services/cache/cache_engine.dart';
+import 'services/history.dart';
 import 'services/library.dart';
 import 'services/nas/nas_source.dart';
 import 'services/quark/quark_api.dart';
@@ -204,6 +205,7 @@ class _BootPageState extends State<BootPage> with WidgetsBindingObserver {
         QuarkApi.instance.load(),
         NasSource.instance.load(),
         CacheEngine.instance.load(),
+        PlayHistory.instance.load(),
         UpdateService.instance.load(),
       ]).timeout(const Duration(seconds: 8));
     } catch (_) {}

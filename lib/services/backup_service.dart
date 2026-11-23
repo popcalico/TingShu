@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'app_wipe.dart';
+import 'history.dart';
 import 'library.dart';
 import 'update_service.dart';
 
@@ -92,6 +93,7 @@ class BackupService {
         'version': UpdateService.instance.versionLabel,
         'channel': UpdateService.instance.channel.name,
         'library': Library.instance.exportState(),
+        'history': PlayHistory.instance.exportState(),
       };
       final ok = await _ch.invokeMethod<bool>('write', {
         'text': jsonEncode(payload),
@@ -161,6 +163,9 @@ class BackupService {
 
     try {
       await Library.instance.applyState(lib);
+      // 播放历史跟着一起回来；老备份里没有这个字段，跳过即可
+      final hist = map['history'];
+      if (hist is List) await PlayHistory.instance.applyState(hist);
       final ch = map['channel'];
       if (ch == 'beta' || ch == 'stable') {
         await UpdateService.instance.setChannel(

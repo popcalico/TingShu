@@ -14,6 +14,7 @@ import '../widgets/recommend_flow.dart';
 import '../widgets/update_prompt.dart';
 import 'add_page.dart';
 import 'book_page.dart';
+import 'history_page.dart';
 import 'player_page.dart';
 import 'search_page.dart';
 import 'settings_page.dart';
@@ -273,7 +274,8 @@ class _HomeMenu extends StatelessWidget {
       itemBuilder: (ctx) => [
         _item(1, Icons.add_circle_outline_rounded, '添加评书'),
         _item(2, Icons.menu_book_rounded, '全部书架'),
-        _item(3, Icons.settings_outlined, '设置'),
+        _item(3, Icons.history_rounded, '播放历史'),
+        _item(4, Icons.settings_outlined, '设置'),
       ],
       onSelected: (v) {
         switch (v) {
@@ -282,6 +284,8 @@ class _HomeMenu extends StatelessWidget {
           case 2:
             Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ShelfPage()));
           case 3:
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const HistoryPage()));
+          case 4:
             Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SettingsPage()));
         }
       },

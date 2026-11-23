@@ -6,10 +6,11 @@ import 'package:media_kit/media_kit.dart';
 
 import '../core/theme/ting_theme.dart';
 import '../models/ting.dart';
+import '../services/app_log.dart';
 import '../services/audio_focus.dart';
 import '../services/bili_source.dart';
-import '../services/app_log.dart';
 import '../services/cache/cache_engine.dart';
+import '../services/history.dart';
 import '../services/library.dart';
 import '../services/nas/nas_source.dart';
 import '../services/quark/quark_api.dart';
@@ -386,6 +387,15 @@ class TingPlayer extends ChangeNotifier {
         'ch': _index + 1,
         'total': b.chapters.length,
       });
+
+      // 真正出声了才记历史。点了却没放出来的（403、链接过期）不该占一条，
+      // 否则家属会看到一本"其实没听过"的书。
+      unawaited(PlayHistory.instance.record(
+        b,
+        _index,
+        chapterTitle: ch.numbered,
+        totalChapters: b.chapters.length,
+      ));
     } on QuarkException catch (e) {
       if (token != _openToken) return;
       _state = TingState.error;
