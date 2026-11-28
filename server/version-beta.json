@@ -1,8 +1,8 @@
 {
-  "versionCode": 31,
-  "versionName": "1.1.27",
+  "versionCode": 32,
+  "versionName": "1.1.28",
   "url": "https://ali.popcalico.top/tingshu/tingshu-beta.apk",
-  "size": 38484281,
-  "notes": "新增设备日志：启动回传服务器、设置里可视化查看老人操作与错误、支持多设备区分",
+  "size": 38515185,
+  "notes": "新增播放历史：按天列出最近听过的书，点一下接着听",
   "force": false
 }

@@ -1,8 +1,8 @@
 {
-  "versionCode": 24,
-  "versionName": "1.1.20",
+  "versionCode": 32,
+  "versionName": "1.1.28",
   "url": "https://ali.popcalico.top/tingshu/tingshu.apk",
-  "size": 38040173,
-  "notes": "修复夸克无法播放（取直链接口返回数组解析失败）；新增播放诊断；书架自动备份与恢复；更新不再丢配置",
+  "size": 38515185,
+  "notes": "新增播放历史（按天列出最近听过的书，点一下接着听）、搜索（先找书架、再搜网络）、书架多选删除、播放页放大上一回/下一回并新增「不喜欢这本，换一本」；修复更新后配置丢失、夸克网盘内容无法播放",
   "force": false
 }
